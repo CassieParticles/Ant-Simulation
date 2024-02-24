@@ -11,7 +11,6 @@ public:
 	~AntRenderer();
 
 	void renderAnts();
-
 	void updateAntPosition(int antIndex, sf::Vector2f antPos);
 protected:
 	sf::VertexArray ants;

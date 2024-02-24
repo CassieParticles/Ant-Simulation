@@ -5,29 +5,37 @@
 
 #include "../Simulation/AntManager.h"
 
-void workerThreadFunction(TaskFarm* farm)
+void TaskFarm::workerThreadFunction()
 {
-	while (!farm->end)
+	std::unique_lock<std::mutex>rLock(readyMutex);
+	readyToStart.wait(rLock, [&] {return ready; });	//Wait until ready
+	while (!this->end)
 	{
-		farm->taskMutex.lock();	//Lock the task mutex then get a task
+		this->taskMutex.lock();	//Lock the task mutex then get a task
 
-		if (farm->antTasks.size() == 0)	//No tasks, take a 100ms break to prevent using a lot of CPU bandwidth looping
+		if (this->antTasks.size() == 0)	//No tasks, take a 100ms break to prevent using a lot of CPU bandwidth looping
 		{
-			farm->taskMutex.unlock();
+			this->taskMutex.unlock();
 			std::this_thread::sleep_for(std::chrono::milliseconds(100));
 			//std::cout << "Done tasks\n";
 			continue;
 		}
 
-		int task = farm->antTasks.front();	//Get the task
-		farm->antTasks.pop();
+		int task = this->antTasks.front();	//Get the task
+		this->antTasks.pop();
 
-		farm->taskMutex.unlock();	//unlock the mutex
+		this->taskMutex.unlock();	//unlock the mutex
 
-		farm->antManager->moveAnt(task, 1.f / 60.f);
+		this->antManager->moveAnt(task, 1.f / 60.f);
 
 	}
 	return;
+}
+
+void TaskFarm::start()
+{
+	ready = true;
+	readyToStart.notify_all();
 }
 
 
@@ -36,7 +44,7 @@ TaskFarm::TaskFarm(int threadCount,AntManager* antManager):antManager{antManager
 	taskMutex.lock();
 	for (int i = 0; i < threadCount; ++i)	//Create worker threads, don't need to be stored since they won't be joined
 	{
-		std::thread t = std::thread(workerThreadFunction, this);
+		std::thread t = std::thread(&TaskFarm::workerThreadFunction, this);
 		t.detach();
 	}
 

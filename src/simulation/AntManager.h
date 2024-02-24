@@ -27,5 +27,5 @@ protected:
 	std::vector<Ant> ants;
 	AntRenderer* antRenderer;
 
-	constexpr static float moveSpeed=16.f;
+	constexpr static float moveSpeed=64.f;
 };

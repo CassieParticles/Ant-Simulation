@@ -12,7 +12,7 @@ class AntManager;
 
 class TaskFarm
 {
-	friend void workerThreadFunction(TaskFarm* farm);
+	
 public:
 	TaskFarm(int threadCount, AntManager* antManager);
 	~TaskFarm();
@@ -24,9 +24,16 @@ public:
 	bool isTaskListEmpty() { return antTasks.size() == 0; }
 	void addAnts(int antCount);
 
+	void workerThreadFunction();
+
+	void start();
 protected:
 	std::queue<int> antTasks;
 	std::mutex taskMutex;
+
+	std::mutex readyMutex;
+	std::condition_variable readyToStart;
+	bool ready{ false };
 
 	std::thread managerThread;
 
