@@ -8,15 +8,17 @@
 #include "TaskParallelism/TaskFarmAnts.h"
 #include "Simulation/AntManager.h"
 #include "graphics/WindowManager.h"
+#include "graphics/AntRenderer.h"
 
 #include <chrono>
 
 
 int main()
 {
-	AntManager antManager(6400, sf::Vector2f(512, 512));
+	AntManager antManager(64000, sf::Vector2f(512, 512));
 	TaskFarm farm(16,&antManager);
 	WindowManager windowManager;
+	AntRenderer antRenderer(64000, &windowManager);
 	
 
 	//farm.addAntManager(&manager);
@@ -33,7 +35,7 @@ int main()
 			time = newTime;
 			std::cout << timeDelta << '\n';
 			//std::cout << "Adding more ant\n";
-			farm.addAnts(6400);
+			farm.addAnts(64000);
 		}
 	}
 

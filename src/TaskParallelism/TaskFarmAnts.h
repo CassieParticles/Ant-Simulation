@@ -9,6 +9,7 @@
 #include "../Simulation/AntManager.h"
 
 class AntManager;
+class AntRenderer;
 
 class TaskFarm
 {

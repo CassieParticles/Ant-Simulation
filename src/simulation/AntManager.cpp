@@ -1,6 +1,7 @@
 #include "AntManager.h"
 
 #include <iostream>
+#include <SFML/Graphics.hpp>
 
 AntManager::AntManager(int initialAntCount, sf::Vector2f initialPosition) :ants{}
 {
@@ -28,5 +29,6 @@ void AntManager::moveAnt(int index, float deltaTime)
 	Ant& ant = ants.at(index);
 
 	ant.position += moveSpeed * deltaTime * ant.moveDirection;
+
 	//std::cout << "Ant " << index << " has been moved\n";
 }
