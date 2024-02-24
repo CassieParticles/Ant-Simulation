@@ -6,6 +6,10 @@ AntRenderer::AntRenderer(int antCount,WindowManager* windowManager):windowManage
 {
 	ants = sf::VertexArray(sf::Points, antCount);
 	windowManager->setAntRenderer(this);
+	for (int i = 0; i < antCount; ++i)
+	{
+		ants[i].color = sf::Color(0, 0, 0, 255);
+	}
 }
 
 AntRenderer::~AntRenderer()

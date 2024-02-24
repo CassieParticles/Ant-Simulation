@@ -3,6 +3,8 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 
+#include "../graphics/AntRenderer.h"
+
 AntManager::AntManager(int initialAntCount, sf::Vector2f initialPosition) :ants{}
 {
 	float angle{};
@@ -29,6 +31,7 @@ void AntManager::moveAnt(int index, float deltaTime)
 	Ant& ant = ants.at(index);
 
 	ant.position += moveSpeed * deltaTime * ant.moveDirection;
+	antRenderer->updateAntPosition(index, ant.position);
 
 	//std::cout << "Ant " << index << " has been moved\n";
 }

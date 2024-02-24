@@ -19,7 +19,7 @@ int main()
 	TaskFarm farm(16,&antManager);
 	WindowManager windowManager;
 	AntRenderer antRenderer(64000, &windowManager);
-	
+	antManager.addAntRenderer(&antRenderer);
 
 	//farm.addAntManager(&manager);
 
