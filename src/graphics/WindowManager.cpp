@@ -21,9 +21,9 @@ void WindowManager::windowLoop()
 		}
 	}
 
+	window.clear(sf::Color(200,200,255,255));
 	antRenderer->renderAnts();
 
-	window.clear(sf::Color(200,200,255,255));
 	window.display();
 	
 }

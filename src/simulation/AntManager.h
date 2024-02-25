@@ -9,11 +9,15 @@ struct Ant
 	sf::Vector2f moveDirection;
 };
 
+class AntRenderer;
+
 class AntManager
 {
 public:
 	AntManager(int initialAntCount, sf::Vector2f initialPosition);
 	~AntManager();
+
+	void addAntRenderer(AntRenderer* antRenderer) { this->antRenderer = antRenderer; }
 
 	void addAnt(sf::Vector2f position, sf::Vector2f moveDirection);
 
@@ -21,6 +25,7 @@ public:
 
 protected:
 	std::vector<Ant> ants;
+	AntRenderer* antRenderer;
 
-	constexpr static float moveSpeed=16.f;
+	constexpr static float moveSpeed=64.f;
 };

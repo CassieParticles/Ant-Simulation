@@ -15,13 +15,15 @@
 
 int main()
 {
-	AntManager antManager(64000, sf::Vector2f(512, 512));
+	AntManager antManager(6400, sf::Vector2f(400, 400));
 	TaskFarm farm(16,&antManager);
 	WindowManager windowManager;
-	AntRenderer antRenderer(64000, &windowManager);
-	
+	AntRenderer antRenderer(6400, &windowManager);
+	antManager.addAntRenderer(&antRenderer);
 
 	//farm.addAntManager(&manager);
+
+	farm.start();	//Start running threads
 
 	auto time = std::chrono::high_resolution_clock::now();
 
@@ -34,8 +36,7 @@ int main()
 			long timeDelta = std::chrono::duration_cast<std::chrono::milliseconds>(newTime-time).count();
 			time = newTime;
 			std::cout << timeDelta << '\n';
-			//std::cout << "Adding more ant\n";
-			farm.addAnts(64000);
+			farm.addAnts(6400);
 		}
 	}
 
