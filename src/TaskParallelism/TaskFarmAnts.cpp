@@ -49,7 +49,7 @@ TaskFarm::TaskFarm(int threadCount,AntManager* antManager):antManager{antManager
 	}
 
 	//Add tasks
-	for (int i = 0; i < 32; ++i)
+	for (int i = 0; i < 6400; ++i)
 	{
 		antTasks.push(i);
 	}
