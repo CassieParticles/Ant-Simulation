@@ -5,7 +5,7 @@
 
 #include "../Simulation/AntManager.h"
 
-void TaskFarm::workerThreadFunction()
+void TaskFarm::workerThreadFunction(int threadIndex)
 {
 	std::unique_lock<std::mutex>rLock(readyMutex);
 	readyToStart.wait(rLock, [&] {return ready; });	//Wait until ready
@@ -26,7 +26,7 @@ void TaskFarm::workerThreadFunction()
 
 		this->taskMutex.unlock();	//unlock the mutex
 
-		this->antManager->moveAnt(task, 1.f / 60.f);
+		this->antManager->moveAnt(task, 1.f / 60.f,threadIndex);
 
 	}
 	return;
@@ -44,7 +44,7 @@ TaskFarm::TaskFarm(int threadCount,AntManager* antManager):antManager{antManager
 	taskMutex.lock();
 	for (int i = 0; i < threadCount; ++i)	//Create worker threads, don't need to be stored since they won't be joined
 	{
-		std::thread t = std::thread(&TaskFarm::workerThreadFunction, this);
+		std::thread t = std::thread(&TaskFarm::workerThreadFunction, this,i);
 		t.detach();
 	}
 
