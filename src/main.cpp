@@ -9,6 +9,7 @@
 #include "Simulation/AntManager.h"
 #include "graphics/WindowManager.h"
 #include "graphics/AntRenderer.h"
+#include "TaskParallelism/ThreadRandom.h"
 
 #include <chrono>
 
@@ -20,6 +21,7 @@ int main()
 	WindowManager windowManager;
 	AntRenderer antRenderer(6400, &windowManager);
 	antManager.addAntRenderer(&antRenderer);
+	ThreadRandom::getThreadRandom(16);	//Initialize the thread random class so it can be accessed elsewhere
 
 	//farm.addAntManager(&manager);
 

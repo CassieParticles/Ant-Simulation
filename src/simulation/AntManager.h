@@ -3,6 +3,8 @@
 #include <SFML/System/Vector2.hpp>
 #include <mutex>
 
+
+
 struct Ant
 {
 	sf::Vector2f position;
@@ -21,7 +23,7 @@ public:
 
 	void addAnt(sf::Vector2f position, sf::Vector2f moveDirection);
 
-	void moveAnt(int index, float deltaTime);
+	void moveAnt(int index, float deltaTime, int threadId);
 
 protected:
 	std::vector<Ant> ants;

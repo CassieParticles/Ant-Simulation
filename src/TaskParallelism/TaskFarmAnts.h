@@ -24,7 +24,7 @@ public:
 	bool isTaskListEmpty() { return antTasks.size() == 0; }
 	void addAnts(int antCount);
 
-	void workerThreadFunction();
+	void workerThreadFunction(int threadIndex);
 
 	void start();
 protected:
