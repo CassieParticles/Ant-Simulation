@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 
 class AntRenderer;
+class FoodRenderer;
 
 class WindowManager
 {
@@ -12,6 +13,7 @@ public:
 	~WindowManager();
 
 	void setAntRenderer(AntRenderer* antRenderer) { this->antRenderer = antRenderer; }
+	void setFoodRenderer(FoodRenderer* foodRenderer) { this->foodRenderer = foodRenderer; }
 
 	void windowLoop();
 
@@ -20,4 +22,5 @@ public:
 protected:
 	sf::RenderWindow window;
 	AntRenderer* antRenderer;
+	FoodRenderer* foodRenderer;
 };

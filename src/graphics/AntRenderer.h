@@ -12,6 +12,7 @@ public:
 
 	void renderAnts();
 	void updateAntPosition(int antIndex, sf::Vector2f antPos);
+	void updateAntFood(int antIndex, bool hasFood);
 protected:
 	sf::VertexArray ants;
 	WindowManager* windowManager;

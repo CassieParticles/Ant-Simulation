@@ -14,7 +14,7 @@ class TaskFarm
 {
 	
 public:
-	TaskFarm(int threadCount, AntManager* antManager);
+	TaskFarm(int threadCount, AntManager* antManager, int initialAntCount);
 	~TaskFarm();
 
 	void addAntManager(AntManager* antManager) { this->antManager = antManager; }
@@ -24,7 +24,7 @@ public:
 	bool isTaskListEmpty() { return antTasks.size() == 0; }
 	void addAnts(int antCount);
 
-	void workerThreadFunction();
+	void workerThreadFunction(int threadIndex);
 
 	void start();
 protected:
