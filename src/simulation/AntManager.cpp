@@ -9,7 +9,7 @@
 
 AntManager::AntManager(int initialAntCount, sf::Vector2f initialPosition,sf::Vector2i worldSize) :ants{},worldSize{worldSize}
 {
-	foodArray.resize(worldSize.x * worldSize.y);
+	foodArray.resize(worldSize.x * worldSize.y,false);
 	float angle{};
 	for (int i = 0; i < initialAntCount; ++i)
 	{
@@ -58,4 +58,20 @@ void AntManager::moveAnt(int index, float deltaTime, int threadId)
 	antRenderer->updateAntPosition(index, ant.position);
 
 	//std::cout << "Ant " << index << " has been moved\n";
+}
+
+void AntManager::addFoodChunk(int x, int y, int width, int height)
+{
+	//Update the array in manager
+	for (int localY = y; localY < y + height; ++localY)
+	{
+		for (int localX = x; localX < x + width; ++localX)
+		{
+			int index = localY * worldSize.x + localX;	//Get index from position
+			foodArray[index] = true;
+		}
+	}
+
+	//Update the texture in the renderer
+	foodRenderer->updateFoodChunk(x, y, width, height, true);
 }

@@ -7,7 +7,7 @@ class WindowManager;
 class FoodRenderer
 {
 public:
-	FoodRenderer(WindowManager* windowManager,sf::Color foodColour);
+	FoodRenderer(WindowManager* windowManager,sf::Color foodColour,sf::Vector2i worldSize);
 	~FoodRenderer();
 
 	void renderFood();

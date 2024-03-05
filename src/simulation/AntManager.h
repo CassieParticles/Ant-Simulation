@@ -27,6 +27,8 @@ public:
 
 	void moveAnt(int index, float deltaTime, int threadId);
 
+	void addFoodChunk(int x, int y, int width=1, int height=1);
+
 protected:
 
 	sf::Vector2i worldSize;

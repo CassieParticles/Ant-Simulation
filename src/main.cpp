@@ -21,13 +21,15 @@ int main()
 	TaskFarm farm(16,&antManager);
 	WindowManager windowManager;
 	AntRenderer antRenderer(6400, &windowManager);
-	FoodRenderer foodRenderer(&windowManager, sf::Color(255, 0, 0, 255));
+	FoodRenderer foodRenderer(&windowManager, sf::Color(255, 0, 0, 255),sf::Vector2i(800,800));
 	ThreadRandom::getThreadRandom(16);	//Initialize the thread random class so it can be accessed elsewhere
 
 	antManager.addAntRenderer(&antRenderer);
 	antManager.addFoodRenderer(&foodRenderer);
 
 	farm.start();	//Start running threads
+
+	//antManager.addFoodChunk(64, 64, 64, 64);
 
 	auto time = std::chrono::high_resolution_clock::now();
 
