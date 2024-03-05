@@ -30,6 +30,7 @@ void AntManager::addAnt(sf::Vector2f position, sf::Vector2f moveDirection)
 
 void AntManager::moveAnt(int index, float deltaTime, int threadId)
 {
+
 	//Get ant from list (race condition should be prevented in the task farm, so mutex not needed here)
 	Ant& ant = ants.at(index);
 

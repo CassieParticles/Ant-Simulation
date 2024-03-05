@@ -8,7 +8,10 @@
 void TaskFarm::workerThreadFunction(int threadIndex)
 {
 	std::unique_lock<std::mutex>rLock(readyMutex);
-	readyToStart.wait(rLock, [&] {return ready; });	//Wait until ready
+	//std::cout << "Thread " << threadIndex << " is ready to go\n";
+	readyToStart.wait(rLock, [this] {return ready; });	//Wait until ready
+	//std::cout << "Thread " << threadIndex << " is going!\n";
+	rLock.unlock();
 
 	while (!end)
 	{
@@ -38,7 +41,8 @@ void TaskFarm::workerThreadFunction(int threadIndex)
 void TaskFarm::start()
 {
 	ready = true;
-	std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	//std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+	std::cout << "Threads notified\n";
 	readyToStart.notify_all();
 }
 
