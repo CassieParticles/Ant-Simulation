@@ -14,7 +14,7 @@ class TaskFarm
 {
 	
 public:
-	TaskFarm(int threadCount, AntManager* antManager);
+	TaskFarm(int threadCount, AntManager* antManager, int initialAntCount);
 	~TaskFarm();
 
 	void addAntManager(AntManager* antManager) { this->antManager = antManager; }

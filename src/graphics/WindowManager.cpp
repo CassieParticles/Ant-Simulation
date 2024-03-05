@@ -1,5 +1,6 @@
 #include "WindowManager.h"
 #include "AntRenderer.h"
+#include "FoodRenderer.h"
 
 WindowManager::WindowManager():window{sf::VideoMode(800,800),"Ant simulation"}
 {
@@ -23,6 +24,7 @@ void WindowManager::windowLoop()
 
 	window.clear(sf::Color(200,200,255,255));
 	antRenderer->renderAnts();
+	foodRenderer->renderFood();
 
 	window.display();
 	

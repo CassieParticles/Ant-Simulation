@@ -8,25 +8,31 @@
 void TaskFarm::workerThreadFunction(int threadIndex)
 {
 	std::unique_lock<std::mutex>rLock(readyMutex);
-	readyToStart.wait(rLock, [&] {return ready; });	//Wait until ready
-	while (!this->end)
-	{
-		this->taskMutex.lock();	//Lock the task mutex then get a task
+	std::cout << "Thread " << threadIndex << " is ready to go\n";
+	readyToStart.wait(rLock, [this] {return ready; });	//Wait until ready
+	std::cout << "Thread " << threadIndex << " is going!\n";
+	rLock.unlock();
 
-		if (this->antTasks.size() == 0)	//No tasks, take a 100ms break to prevent using a lot of CPU bandwidth looping
+	while (!end)
+	{
+		taskMutex.lock();	//Lock the task mutex then get a task
+
+		if (antTasks.size() == 0)	//No tasks, take a 100ms break to prevent using a lot of CPU bandwidth looping
 		{
-			this->taskMutex.unlock();
+			taskMutex.unlock();
 			std::this_thread::sleep_for(std::chrono::milliseconds(100));
 			//std::cout << "Done tasks\n";
 			continue;
 		}
 
-		int task = this->antTasks.front();	//Get the task
-		this->antTasks.pop();
+		int task = antTasks.front();	//Get the task
+		antTasks.pop();
 
-		this->taskMutex.unlock();	//unlock the mutex
+		taskMutex.unlock();	//unlock the mutex
 
-		this->antManager->moveAnt(task, 1.f / 60.f,threadIndex);
+		
+
+		antManager->moveAnt(task, 1.f / 60.f,threadIndex);
 
 	}
 	return;
@@ -35,11 +41,13 @@ void TaskFarm::workerThreadFunction(int threadIndex)
 void TaskFarm::start()
 {
 	ready = true;
+	//std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+	std::cout << "Threads notified\n";
 	readyToStart.notify_all();
 }
 
 
-TaskFarm::TaskFarm(int threadCount,AntManager* antManager):antManager{antManager}
+TaskFarm::TaskFarm(int threadCount,AntManager* antManager, int initialAntCount):antManager{antManager}
 {
 	taskMutex.lock();
 	for (int i = 0; i < threadCount; ++i)	//Create worker threads, don't need to be stored since they won't be joined
@@ -49,7 +57,7 @@ TaskFarm::TaskFarm(int threadCount,AntManager* antManager):antManager{antManager
 	}
 
 	//Add tasks
-	for (int i = 0; i < 6400; ++i)
+	for (int i = 0; i < initialAntCount; ++i)
 	{
 		antTasks.push(i);
 	}
