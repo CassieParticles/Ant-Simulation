@@ -9,6 +9,7 @@
 #include "Simulation/AntManager.h"
 #include "graphics/WindowManager.h"
 #include "graphics/AntRenderer.h"
+#include "graphics/FoodRenderer.h"
 #include "TaskParallelism/ThreadRandom.h"
 
 #include <chrono>
@@ -16,14 +17,15 @@
 
 int main()
 {
-	AntManager antManager(6400, sf::Vector2f(400, 400));
+	AntManager antManager(6400, sf::Vector2f(400, 400),sf::Vector2i(800,800));
 	TaskFarm farm(16,&antManager);
 	WindowManager windowManager;
 	AntRenderer antRenderer(6400, &windowManager);
-	antManager.addAntRenderer(&antRenderer);
+	FoodRenderer foodRenderer(&windowManager, sf::Color(255, 0, 0, 255));
 	ThreadRandom::getThreadRandom(16);	//Initialize the thread random class so it can be accessed elsewhere
 
-	//farm.addAntManager(&manager);
+	antManager.addAntRenderer(&antRenderer);
+	antManager.addFoodRenderer(&foodRenderer);
 
 	farm.start();	//Start running threads
 
