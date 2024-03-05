@@ -25,7 +25,7 @@ AntManager::~AntManager()
 
 void AntManager::addAnt(sf::Vector2f position, sf::Vector2f moveDirection)
 {
-	ants.push_back(Ant{ position,moveDirection });
+	ants.push_back(Ant{ position,moveDirection,sf::Vector2f(-1,-1)});
 }
 
 void AntManager::moveAnt(int index, float deltaTime, int threadId)
@@ -36,15 +36,40 @@ void AntManager::moveAnt(int index, float deltaTime, int threadId)
 
 	//std::cout << threadId << '\n';
 
-	constexpr float turnSpeed = 15.f;	//In degrees cause that's what sfml uses
 
-	float randomNumber = ThreadRandom::getThreadRandom()->getRandomNumber(threadId);
-	float rotationOffset = (randomNumber - 0.5f) * turnSpeed;
+	if (ant.desiredLocation.x == -1)	//if no desired location, just meandering
+	{
+		constexpr float turnSpeed = 15.f;	//In degrees cause that's what sfml uses
 
-	sf::Transform t{};
-	t.rotate(rotationOffset);
+		float randomNumber = ThreadRandom::getThreadRandom()->getRandomNumber(threadId);
+		float rotationOffset = (randomNumber - 0.5f) * turnSpeed;
 
-	ant.moveDirection = t * ant.moveDirection;
+		sf::Transform t{};
+		t.rotate(rotationOffset);
+
+		ant.moveDirection = t * ant.moveDirection;
+
+		//Check for food
+		constexpr int foodDetectRange = 5;
+
+		for (int y = ant.position.y - foodDetectRange; y < ant.position.y + foodDetectRange; ++y)
+		{
+			for (int x = ant.position.x - foodDetectRange; x < ant.position.x + foodDetectRange; ++x)
+			{
+				if (getFood(x, y))
+				{
+					ant.desiredLocation = sf::Vector2f(x, y);
+					sf::Vector2f desiredDirection = (ant.desiredLocation - ant.position);
+					float mag = sqrt(desiredDirection.x * desiredDirection.x + desiredDirection.y * desiredDirection.y);
+					desiredDirection /= mag;
+					ant.moveDirection = desiredDirection;
+				}
+			}
+		}
+	}
+
+
+
 
 	ant.position += moveSpeed * deltaTime * ant.moveDirection;
 
@@ -59,9 +84,11 @@ void AntManager::moveAnt(int index, float deltaTime, int threadId)
 		ant.position.y += moveSpeed * deltaTime * ant.moveDirection.y;
 	}
 
+
 	if (getFood(ant.position.x, ant.position.y))	//If ant is over food, take it
 	{
 		takeFood(ant.position.x, ant.position.y);
+		ant.desiredLocation = sf::Vector2f(-1, -1);
 	}
 
 	antRenderer->updateAntPosition(index, ant.position);
@@ -87,16 +114,14 @@ void AntManager::addFoodChunk(int x, int y, int width, int height)
 
 void AntManager::takeFood(int x, int y)
 {
-	foodMutex.lock();
+	//foodMutex.lock();
 	foodArray[y * worldSize.x + x] = false;
-	foodMutex.unlock();
+	//foodMutex.unlock();
 	foodRenderer->updateFoodPixel(x, y, false);
 }
 
 bool AntManager::getFood(int index)
 {
-	foodMutex.lock();
 	bool data=foodArray.at(index);
-	foodMutex.unlock();
 	return data;
 }

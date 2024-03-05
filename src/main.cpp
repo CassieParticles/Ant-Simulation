@@ -14,7 +14,7 @@
 
 #include <chrono>
 
-constexpr int antCount = 1600;
+constexpr int antCount = 160;
 
 int main()
 {
