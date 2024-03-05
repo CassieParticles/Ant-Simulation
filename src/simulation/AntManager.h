@@ -28,7 +28,10 @@ public:
 	void moveAnt(int index, float deltaTime, int threadId);
 
 	void addFoodChunk(int x, int y, int width=1, int height=1);
+	void takeFood(int x, int y);
 
+	bool getFood(int x, int y) { return getFood(y * worldSize.x + x); }	
+	bool getFood(int index);
 protected:
 
 	sf::Vector2i worldSize;
@@ -39,6 +42,7 @@ protected:
 	FoodRenderer* foodRenderer;	
 
 	std::vector<bool> foodArray;	//Array of pixels where there is food
+	std::mutex foodMutex;
 
 	constexpr static float moveSpeed=64.f;
 };

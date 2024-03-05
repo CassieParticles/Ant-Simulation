@@ -29,7 +29,7 @@ int main()
 
 	farm.start();	//Start running threads
 
-	//antManager.addFoodChunk(64, 64, 64, 64);
+	antManager.addFoodChunk(256, 256, 64, 64);
 
 	auto time = std::chrono::high_resolution_clock::now();
 

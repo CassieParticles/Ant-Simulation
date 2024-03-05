@@ -9,6 +9,7 @@ void TaskFarm::workerThreadFunction(int threadIndex)
 {
 	std::unique_lock<std::mutex>rLock(readyMutex);
 	readyToStart.wait(rLock, [&] {return ready; });	//Wait until ready
+
 	while (!end)
 	{
 		taskMutex.lock();	//Lock the task mutex then get a task
@@ -26,6 +27,8 @@ void TaskFarm::workerThreadFunction(int threadIndex)
 
 		taskMutex.unlock();	//unlock the mutex
 
+		
+
 		antManager->moveAnt(task, 1.f / 60.f,threadIndex);
 
 	}
@@ -35,6 +38,7 @@ void TaskFarm::workerThreadFunction(int threadIndex)
 void TaskFarm::start()
 {
 	ready = true;
+	std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	readyToStart.notify_all();
 }
 

@@ -52,6 +52,6 @@ ThreadRandom::~ThreadRandom()
 
 float ThreadRandom::getRandomNumber(int threadId)
 {
-	indices[threadId] = (indices[threadId]++) % randomListSize;	//Increment index, and spin back to 0 if it reaches 1000
+	indices[threadId] = (indices[threadId]++) % (randomListSize-1);	//Increment index, and spin back to 0 if it reaches 1000
 	return randomNumbers[threadId][indices[threadId]];
 }
