@@ -10,6 +10,7 @@ struct Ant
 	sf::Vector2f position;
 	sf::Vector2f moveDirection;
 	sf::Vector2f desiredLocation;	//Will be set to a position if food is availible 
+	bool hasFood=false;
 };
 
 class AntRenderer;

@@ -52,17 +52,20 @@ void AntManager::moveAnt(int index, float deltaTime, int threadId)
 		//Check for food
 		constexpr int foodDetectRange = 5;
 
-		for (int y = ant.position.y - foodDetectRange; y < ant.position.y + foodDetectRange; ++y)
+		if (!ant.hasFood)
 		{
-			for (int x = ant.position.x - foodDetectRange; x < ant.position.x + foodDetectRange; ++x)
+			for (int y = ant.position.y - foodDetectRange; y < ant.position.y + foodDetectRange; ++y)
 			{
-				if (getFood(x, y))
+				for (int x = ant.position.x - foodDetectRange; x < ant.position.x + foodDetectRange; ++x)
 				{
-					ant.desiredLocation = sf::Vector2f(x, y);
-					sf::Vector2f desiredDirection = (ant.desiredLocation - ant.position);
-					float mag = sqrt(desiredDirection.x * desiredDirection.x + desiredDirection.y * desiredDirection.y);
-					desiredDirection /= mag;
-					ant.moveDirection = desiredDirection;
+					if (getFood(x, y))
+					{
+						ant.desiredLocation = sf::Vector2f(x, y);
+						sf::Vector2f desiredDirection = (ant.desiredLocation - ant.position);
+						float mag = sqrt(desiredDirection.x * desiredDirection.x + desiredDirection.y * desiredDirection.y);
+						desiredDirection /= mag;
+						ant.moveDirection = desiredDirection;
+					}
 				}
 			}
 		}
@@ -85,10 +88,12 @@ void AntManager::moveAnt(int index, float deltaTime, int threadId)
 	}
 
 
-	if (getFood(ant.position.x, ant.position.y))	//If ant is over food, take it
+	if (getFood(ant.position.x, ant.position.y)&&!ant.hasFood)	//If ant is over food, take it
 	{
 		takeFood(ant.position.x, ant.position.y);
 		ant.desiredLocation = sf::Vector2f(-1, -1);
+		ant.hasFood = true;
+		antRenderer->updateAntFood(index, ant.hasFood);
 	}
 
 	antRenderer->updateAntPosition(index, ant.position);
