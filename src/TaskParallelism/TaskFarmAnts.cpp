@@ -8,9 +8,9 @@
 void TaskFarm::workerThreadFunction(int threadIndex)
 {
 	std::unique_lock<std::mutex>rLock(readyMutex);
-	//std::cout << "Thread " << threadIndex << " is ready to go\n";
+	std::cout << "Thread " << threadIndex << " is ready to go\n";
 	readyToStart.wait(rLock, [this] {return ready; });	//Wait until ready
-	//std::cout << "Thread " << threadIndex << " is going!\n";
+	std::cout << "Thread " << threadIndex << " is going!\n";
 	rLock.unlock();
 
 	while (!end)
@@ -47,7 +47,7 @@ void TaskFarm::start()
 }
 
 
-TaskFarm::TaskFarm(int threadCount,AntManager* antManager):antManager{antManager}
+TaskFarm::TaskFarm(int threadCount,AntManager* antManager, int initialAntCount):antManager{antManager}
 {
 	taskMutex.lock();
 	for (int i = 0; i < threadCount; ++i)	//Create worker threads, don't need to be stored since they won't be joined
@@ -57,7 +57,7 @@ TaskFarm::TaskFarm(int threadCount,AntManager* antManager):antManager{antManager
 	}
 
 	//Add tasks
-	for (int i = 0; i < 6400; ++i)
+	for (int i = 0; i < initialAntCount; ++i)
 	{
 		antTasks.push(i);
 	}

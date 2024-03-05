@@ -38,13 +38,13 @@ void AntManager::moveAnt(int index, float deltaTime, int threadId)
 
 	constexpr float turnSpeed = 15.f;	//In degrees cause that's what sfml uses
 
-	float randomNumber = ThreadRandom::getThreadRandom()->getRandomNumber(threadId);
-	float rotationOffset = (randomNumber - 0.5f) * turnSpeed;
+	//float randomNumber = ThreadRandom::getThreadRandom()->getRandomNumber(threadId);
+	//float rotationOffset = (randomNumber - 0.5f) * turnSpeed;
 
-	sf::Transform t{};
-	t.rotate(rotationOffset);
+	//sf::Transform t{};
+	//t.rotate(rotationOffset);
 
-	ant.moveDirection = t * ant.moveDirection;
+	//ant.moveDirection = t * ant.moveDirection;
 
 	ant.position += moveSpeed * deltaTime * ant.moveDirection;
 

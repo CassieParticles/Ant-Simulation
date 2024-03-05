@@ -11,7 +11,7 @@ public:
 	~FoodRenderer();
 
 	void renderFood();
-	void updateFoodPixel(int x, int y, bool food) { updateFoodChunk(x, y, food, 1, 1); }
+	void updateFoodPixel(int x, int y, bool food) { updateFoodChunk(x, y, 1, 1, food); }
 	void updateFoodChunk(int x, int y, int width, int height, bool food);
 protected:
 	WindowManager* windowManager;
