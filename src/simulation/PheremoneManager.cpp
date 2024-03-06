@@ -26,6 +26,18 @@ void PheremoneManager::addHomePheremone(int index, float strength)
 	toHomePheremone[index] = std::min(strength+toHomePheremone[index],1.f);
 }
 
+float PheremoneManager::getFoodPheremone(int index)
+{
+	if (index < 0 || index >= toFoodPheremone.size()) { return; }	//Prevent array out of bounds exceptions
+	return toFoodPheremone.at(index);
+}
+
+float PheremoneManager::getHomePheremone(int index)
+{
+	if (index < 0 || index >= toHomePheremone.size()) { return; }	//Prevent array out of bounds exceptions
+	return toHomePheremone.at(index);
+}
+
 void PheremoneManager::evaporatePheremone(int index, float evapStrength)
 {
 	if (index < 0 || index >= toHomePheremone.size()) { return; }	//Both vectors are same size, so this is fine
