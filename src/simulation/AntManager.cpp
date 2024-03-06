@@ -119,14 +119,15 @@ void AntManager::addFoodChunk(int x, int y, int width, int height)
 
 void AntManager::takeFood(int x, int y)
 {
-	//foodMutex.lock();
-	foodArray[y * worldSize.x + x] = false;
-	//foodMutex.unlock();
+	foodMutex.lock();
+	foodArray[y * worldSize.x + x] = false;	//Update food, then update renderer
+	foodMutex.unlock();
 	foodRenderer->updateFoodPixel(x, y, false);
 }
 
 bool AntManager::getFood(int index)
 {
+	if (index<0 || index>=foodArray.size()) { return false; }
 	bool data=foodArray.at(index);
 	return data;
 }
