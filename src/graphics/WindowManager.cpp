@@ -22,7 +22,7 @@ void WindowManager::windowLoop()
 		}
 	}
 
-	window.clear(sf::Color(200,200,255,255));
+	window.clear(sf::Color(255,255,255,255));
 	foodRenderer->renderFood();
 	antRenderer->renderAnts();
 
