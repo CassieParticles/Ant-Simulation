@@ -3,7 +3,8 @@
 #include <SFML/System/Vector2.hpp>
 #include <mutex>
 #include <vector>
-
+#include <memory>
+//#include "PheremoneManager.h"
 
 struct Ant
 {
@@ -15,11 +16,12 @@ struct Ant
 
 class AntRenderer;
 class FoodRenderer;
+class PheremoneManager;
 
 class AntManager
 {
 public:
-	AntManager(int initialAntCount, sf::Vector2f initialPosition,sf::Vector2i worldSize);
+	AntManager(int initialAntCount, sf::Vector2f initialPosition,sf::Vector2i worldSize,PheremoneManager* pheremoneManager);
 	~AntManager();
 
 	void addAntRenderer(AntRenderer* antRenderer) { this->antRenderer = antRenderer; }
@@ -42,6 +44,8 @@ protected:
 
 	AntRenderer* antRenderer;	//Access renderers, to update their data
 	FoodRenderer* foodRenderer;	
+
+	std::unique_ptr<PheremoneManager> pheremoneManager;
 
 	std::vector<bool> foodArray;	//Array of pixels where there is food
 	std::mutex foodMutex;

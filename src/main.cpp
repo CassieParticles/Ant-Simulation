@@ -6,44 +6,73 @@
 #include <memory>
 
 #include "TaskParallelism/TaskFarmAnts.h"
+#include "TaskParallelism/TaskFarmPheremones.h"
+#include "TaskParallelism/ThreadRandom.h"
+
 #include "Simulation/AntManager.h"
+#include "simulation/PheremoneManager.h"
+
 #include "graphics/WindowManager.h"
 #include "graphics/AntRenderer.h"
 #include "graphics/FoodRenderer.h"
-#include "TaskParallelism/ThreadRandom.h"
 
 #include <chrono>
 
 constexpr int antCount = 1600;
 
+sf::Vector2i worldSize= sf::Vector2i(800, 800);
+sf::Vector2f antStartPos = sf::Vector2f(400, 400);
+
+int antThreads = 12;
+int pheremoneThreads = 4;
+
 int main()
 {
-	AntManager antManager(antCount, sf::Vector2f(400, 400),sf::Vector2i(800,800));
-	TaskFarm farm(16,&antManager,antCount);
+	PheremoneManager pheremoneManager(worldSize);
+	AntManager antManager(antCount, antStartPos,worldSize,&pheremoneManager);
+	TaskFarmAnts antFarm(antThreads,&antManager,antCount);
+	TaskFarmPheremones pheremoneFarm(pheremoneThreads, worldSize, &pheremoneManager);
 	WindowManager windowManager;
 	AntRenderer antRenderer(antCount, &windowManager);
-	FoodRenderer foodRenderer(&windowManager, sf::Color(255, 0, 0, 255),sf::Vector2i(800,800));
-	ThreadRandom::getThreadRandom(16);	//Initialize the thread random class so it can be accessed elsewhere
+	FoodRenderer foodRenderer(&windowManager, sf::Color(255, 0, 0, 255),worldSize);
+	ThreadRandom::getThreadRandom(antThreads);	//Initialize the thread random class so it can be accessed elsewhere
 
 	antManager.addAntRenderer(&antRenderer);
 	antManager.addFoodRenderer(&foodRenderer);
 
-	farm.start();	//Start running threads
 
-	antManager.addFoodChunk(256, 256, 64, 64);
+	antFarm.addAnts(antCount);
+	pheremoneFarm.addTasks(worldSize.x * worldSize.y);
+
+	antFarm.start();	//Start running threads
+
+	antManager.addFoodChunk(64, 64, 64, 64);
 
 	auto time = std::chrono::high_resolution_clock::now();
 
 	while (windowManager.getWindowOpen())
 	{
 		windowManager.windowLoop();
-		if (farm.isTaskListEmpty())
+
+
+
+		if (antFarm.isTaskListEmpty())	//If all ants are done, swap to pheremone
 		{
-			auto newTime= std::chrono::high_resolution_clock::now();
-			long timeDelta = std::chrono::duration_cast<std::chrono::milliseconds>(newTime-time).count();
+			antFarm.pause();
+			antFarm.addAnts(antCount);
+			pheremoneFarm.start();	//Start and unpause are similar, but this also notifies the condition variable
+		}
+
+		if (pheremoneFarm.isTaskListEmpty())	//If all pheremones are done, swap to ants
+		{
+			pheremoneFarm.pause();
+			pheremoneFarm.addTasks(worldSize.x * worldSize.y);
+			antFarm.unpause();
+
+			auto newTime = std::chrono::high_resolution_clock::now();	//Print time for that frame
+			long timeDelta = std::chrono::duration_cast<std::chrono::milliseconds>(newTime - time).count();
 			time = newTime;
 			std::cout << timeDelta << '\n';
-			farm.addAnts(antCount);
 		}
 	}
 
