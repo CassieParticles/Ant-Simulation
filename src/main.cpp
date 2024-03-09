@@ -40,6 +40,10 @@ int main()
 	antManager.addAntRenderer(&antRenderer);
 	antManager.addFoodRenderer(&foodRenderer);
 
+
+	antFarm.addAnts(antCount);
+	pheremoneFarm.addTasks(worldSize.x * worldSize.y);
+
 	antFarm.start();	//Start running threads
 
 	antManager.addFoodChunk(64, 64, 64, 64);
@@ -49,18 +53,26 @@ int main()
 	while (windowManager.getWindowOpen())
 	{
 		windowManager.windowLoop();
-		if (antFarm.isTaskListEmpty())
+
+
+
+		if (antFarm.isTaskListEmpty())	//If all ants are done, swap to pheremone
 		{
-			auto newtime= std::chrono::high_resolution_clock::now();
-			long timedelta = std::chrono::duration_cast<std::chrono::milliseconds>(newtime-time).count();
-			time = newtime;
-			std::cout << timedelta << '\n';
-			antfarm.addants(antcount);
+			antFarm.pause();
+			antFarm.addAnts(antCount);
+			pheremoneFarm.start();	//Start and unpause are similar, but this also notifies the condition variable
 		}
 
-		if (pheremoneFarm.isTaskListEmpty())
+		if (pheremoneFarm.isTaskListEmpty())	//If all pheremones are done, swap to ants
 		{
+			pheremoneFarm.pause();
+			pheremoneFarm.addTasks(worldSize.x * worldSize.y);
+			antFarm.unpause();
 
+			auto newTime = std::chrono::high_resolution_clock::now();	//Print time for that frame
+			long timeDelta = std::chrono::duration_cast<std::chrono::milliseconds>(newTime - time).count();
+			time = newTime;
+			std::cout << timeDelta << '\n';
 		}
 	}
 

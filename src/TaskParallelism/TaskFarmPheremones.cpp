@@ -1,6 +1,7 @@
 #include "TaskFarmPheremones.h"
 
 #include <chrono>
+#include <iostream>
 
 #include "../simulation/PheremoneManager.h"
 
@@ -11,12 +12,14 @@ TaskFarmPheremones::TaskFarmPheremones(int threadCount, sf::Vector2i worldSize, 
 		pheremoneTasks.push_back(std::queue<int>());
 
 		std::thread t = std::thread(&TaskFarmPheremones::workerTask, this, i);
+		t.detach();
 	}
 	
 }
 
 TaskFarmPheremones::~TaskFarmPheremones()
 {
+	cleanup();
 }
 
 void TaskFarmPheremones::start()
@@ -66,8 +69,9 @@ void TaskFarmPheremones::workerTask(int threadId)
 		}
 
 		//Get task
-		int task = pheremoneTasks[threadId].front();
-		pheremoneTasks[threadId].pop();
+		std::queue<int>& taskQueue = pheremoneTasks.at(threadId);
+		int task = taskQueue.front();
+		taskQueue.pop();
 
 		//Run task
 		pheremoneManager->evaporatePheremone(task,0.01f);

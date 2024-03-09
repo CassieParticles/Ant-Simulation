@@ -8,7 +8,7 @@
 #include "../TaskParallelism/ThreadRandom.h"
 #include "PheremoneManager.h"
 
-AntManager::AntManager(int initialAntCount, sf::Vector2f initialPosition,sf::Vector2i worldSize) :ants{},worldSize{worldSize},pheremoneManager{new PheremoneManager(worldSize)}
+AntManager::AntManager(int initialAntCount, sf::Vector2f initialPosition,sf::Vector2i worldSize, PheremoneManager* pheremoneManager) :ants{},worldSize{worldSize},pheremoneManager{pheremoneManager}
 {
 	foodArray.resize(worldSize.x * worldSize.y,false);
 	ants.clear();

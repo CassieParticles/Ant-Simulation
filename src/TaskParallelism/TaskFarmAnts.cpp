@@ -8,9 +8,9 @@
 void TaskFarmAnts::workerThreadFunction(int threadIndex)
 {
 	std::unique_lock<std::mutex>rLock(readyMutex);
-	std::cout << "Thread " << threadIndex << " is ready to go\n";
+	//std::cout << "Thread " << threadIndex << " is ready to go\n";
 	readyToStart.wait(rLock, [this] {return ready; });	//Wait until ready
-	std::cout << "Thread " << threadIndex << " is going!\n";
+	//std::cout << "Thread " << threadIndex << " is going!\n";
 	rLock.unlock();	//Allows all threads to activate
 
 	while (!end)
@@ -47,7 +47,6 @@ void TaskFarmAnts::start()
 {
 	ready = true;
 	//std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-	std::cout << "Threads notified\n";
 	readyToStart.notify_all();
 }
 
@@ -69,7 +68,6 @@ TaskFarmAnts::TaskFarmAnts(int threadCount,AntManager* antManager, int initialAn
 
 	taskMutex.unlock();	//Let worker threads execute tasks
 
-	std::cout << "Tasks added\n";
 }
 
 TaskFarmAnts::~TaskFarmAnts()

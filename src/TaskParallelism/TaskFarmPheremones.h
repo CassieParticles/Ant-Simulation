@@ -19,7 +19,7 @@ public:
 	void cleanup() { end = true; }
 
 	void pause() { doTasks = false; }
-	void run() { doTasks = true; }
+	void unpause() { doTasks = true; }
 
 	void addTasks(int taskCount);
 
