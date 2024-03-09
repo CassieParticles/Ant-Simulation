@@ -17,4 +17,5 @@ protected:
 	sf::VertexArray ants;
 	WindowManager* windowManager;
 
+	sf::CircleShape colonyShape;
 };

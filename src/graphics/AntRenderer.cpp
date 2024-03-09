@@ -10,6 +10,11 @@ AntRenderer::AntRenderer(int antCount,WindowManager* windowManager):windowManage
 	{
 		ants[i].color = sf::Color(0, 0, 0, 255);
 	}
+
+	colonyShape.setRadius(10);
+	colonyShape.setOrigin(10, 10);
+	colonyShape.setPosition(400, 400);
+	colonyShape.setFillColor(sf::Color(125, 0, 255, 255));
 }
 
 AntRenderer::~AntRenderer()
@@ -18,6 +23,7 @@ AntRenderer::~AntRenderer()
 
 void AntRenderer::renderAnts()
 {
+	windowManager->getRenderWindow()->draw(colonyShape);
 	windowManager->getRenderWindow()->draw(ants);
 }
 
