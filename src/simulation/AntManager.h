@@ -43,6 +43,9 @@ protected:
 
 	sf::Vector2i worldSize;
 
+	sf::Vector2f colonyPos;	//Colony position
+	float colonyRadius;
+
 	std::vector<Ant> ants;
 
 	AntRenderer* antRenderer;	//Access renderers, to update their data
