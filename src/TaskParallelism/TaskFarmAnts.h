@@ -10,12 +10,12 @@
 
 class AntManager;
 
-class TaskFarm
+class TaskFarmAnts
 {
 	
 public:
-	TaskFarm(int threadCount, AntManager* antManager, int initialAntCount);
-	~TaskFarm();
+	TaskFarmAnts(int threadCount, AntManager* antManager, int initialAntCount);
+	~TaskFarmAnts();
 
 	void addAntManager(AntManager* antManager) { this->antManager = antManager; }
 
@@ -27,6 +27,9 @@ public:
 	void workerThreadFunction(int threadIndex);
 
 	void start();
+
+	void pause() { ready = false; }
+	void unpause() { ready = true; }
 protected:
 	std::queue<int> antTasks;
 	std::mutex taskMutex;

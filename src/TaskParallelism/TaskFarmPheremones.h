@@ -22,6 +22,8 @@ public:
 	void run() { doTasks = true; }
 
 	void addTasks(int taskCount);
+
+	bool isTaskListEmpty();
 protected:
 	PheremoneManager* pheremoneManager;
 

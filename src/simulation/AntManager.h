@@ -21,7 +21,7 @@ class PheremoneManager;
 class AntManager
 {
 public:
-	AntManager(int initialAntCount, sf::Vector2f initialPosition,sf::Vector2i worldSize);
+	AntManager(int initialAntCount, sf::Vector2f initialPosition,sf::Vector2i worldSize,PheremoneManager* pheremoneManager);
 	~AntManager();
 
 	void addAntRenderer(AntRenderer* antRenderer) { this->antRenderer = antRenderer; }

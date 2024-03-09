@@ -33,6 +33,18 @@ void TaskFarmPheremones::addTasks(int taskCount)
 	}
 }
 
+bool TaskFarmPheremones::isTaskListEmpty()
+{
+	for (int i = 0; i < threadCount; ++i)	//Go through each pool, if any has tasks, don't end
+	{
+		if (pheremoneTasks[i].size() != 0)
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
 void TaskFarmPheremones::workerTask(int threadId)
 {
 	std::unique_lock<std::mutex> rLock(startMutex);			//Don't allow threads to start until TaskFarmPheremones::start() is called
@@ -45,7 +57,14 @@ void TaskFarmPheremones::workerTask(int threadId)
 		{
 			std::this_thread::sleep_for(std::chrono::milliseconds(10));	//Pause thread for 10 millisonds (will be doing this when ants are running)
 			continue;
-		}		
+		}	
+
+		if (pheremoneTasks[threadId].size() == 0)	//Prevent task farm taking tasks when none are available
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(10));
+			continue;	
+		}
+
 		//Get task
 		int task = pheremoneTasks[threadId].front();
 		pheremoneTasks[threadId].pop();
