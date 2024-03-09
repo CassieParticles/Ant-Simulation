@@ -10,13 +10,19 @@ TaskFarmPheremones::TaskFarmPheremones(int threadCount, sf::Vector2i worldSize, 
 	{
 		pheremoneTasks.push_back(std::queue<int>());
 
-		std::thread t = std::thread(TaskFarmPheremones::workerTask, this, i);
+		std::thread t = std::thread(&TaskFarmPheremones::workerTask, this, i);
 	}
 	
 }
 
 TaskFarmPheremones::~TaskFarmPheremones()
 {
+}
+
+void TaskFarmPheremones::start()
+{
+	doTasks = true;
+	readyToStart.notify_all();
 }
 
 void TaskFarmPheremones::addTasks(int taskCount)
@@ -29,11 +35,15 @@ void TaskFarmPheremones::addTasks(int taskCount)
 
 void TaskFarmPheremones::workerTask(int threadId)
 {
+	std::unique_lock<std::mutex> rLock(startMutex);			//Don't allow threads to start until TaskFarmPheremones::start() is called
+	readyToStart.wait(rLock, [this] {return doTasks; });
+	rLock.unlock();
+
 	while (!end)	//Keep running until closing program
 	{
 		if (!doTasks)	//Check if threads should be doing tasks
 		{
-			std::this_thread::sleep_for(std::chrono::milliseconds(10));
+			std::this_thread::sleep_for(std::chrono::milliseconds(10));	//Pause thread for 10 millisonds (will be doing this when ants are running)
 			continue;
 		}		
 		//Get task
