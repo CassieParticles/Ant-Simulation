@@ -15,6 +15,7 @@
 #include "graphics/WindowManager.h"
 #include "graphics/AntRenderer.h"
 #include "graphics/FoodRenderer.h"
+#include "graphics/PheremoneRenderer.h"
 
 #include <chrono>
 
@@ -28,17 +29,22 @@ int pheremoneThreads = 4;
 
 int main()
 {
-	PheremoneManager pheremoneManager(worldSize);
+	PheremoneManager pheremoneManager(worldSize);	//World systems
 	AntManager antManager(antCount, antStartPos,worldSize,&pheremoneManager);
-	TaskFarmAnts antFarm(antThreads,&antManager,antCount);
+
+	TaskFarmAnts antFarm(antThreads,&antManager,antCount);	//Task farms
 	TaskFarmPheremones pheremoneFarm(pheremoneThreads, worldSize, &pheremoneManager);
-	WindowManager windowManager;
+
+	WindowManager windowManager;	//Renderers
 	AntRenderer antRenderer(antCount, &windowManager);
 	FoodRenderer foodRenderer(&windowManager, sf::Color(255, 0, 0, 255),worldSize);
+	PheremoneRenderer pheremoneRenderer(&windowManager, worldSize);
+
 	ThreadRandom::getThreadRandom(antThreads);	//Initialize the thread random class so it can be accessed elsewhere
 
 	antManager.addAntRenderer(&antRenderer);
 	antManager.addFoodRenderer(&foodRenderer);
+	antManager.addPheremoneRenderer(&pheremoneRenderer);
 
 
 	antFarm.addAnts(antCount);
