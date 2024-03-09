@@ -5,6 +5,7 @@
 
 #include "../graphics/AntRenderer.h"
 #include "../graphics/FoodRenderer.h"
+#include "../graphics/PheremoneRenderer.h"
 #include "../TaskParallelism/ThreadRandom.h"
 #include "PheremoneManager.h"
 
@@ -149,10 +150,12 @@ void AntManager::moveAnt(int index, float deltaTime, int threadId)
 	if (ant.hasFood)
 	{
 		pheremoneManager->addFoodPheremone(ant.position.x, ant.position.y, pheremoneStrength);
+		//pheremoneRenderer->addFoodPheremone(ant.position.x, ant.position.y, pheremoneStrength);	//Pheremone renderer too slow to be usable
 	}
 	else
 	{
 		pheremoneManager->addHomePheremone(ant.position.y, ant.position.y, pheremoneStrength);
+		//pheremoneRenderer->addHomePheremone(ant.position.x, ant.position.y, pheremoneStrength);	//Pheremone renderer too slow to be usable
 	}
 
 	antRenderer->updateAntPosition(index, ant.position);
