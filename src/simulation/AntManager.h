@@ -16,6 +16,8 @@ struct Ant
 
 class AntRenderer;
 class FoodRenderer;
+class PheremoneRenderer;
+
 class PheremoneManager;
 
 class AntManager
@@ -26,6 +28,7 @@ public:
 
 	void addAntRenderer(AntRenderer* antRenderer) { this->antRenderer = antRenderer; }
 	void addFoodRenderer(FoodRenderer* foodRenderer) { this->foodRenderer = foodRenderer; }
+	void addPheremoneRenderer(PheremoneRenderer* pheremoneRenderer) { this->pheremoneRenderer = pheremoneRenderer; }
 
 	void addAnt(sf::Vector2f position, sf::Vector2f moveDirection);
 
@@ -40,10 +43,14 @@ protected:
 
 	sf::Vector2i worldSize;
 
+	sf::Vector2f colonyPos;	//Colony position
+	float colonyRadius;
+
 	std::vector<Ant> ants;
 
 	AntRenderer* antRenderer;	//Access renderers, to update their data
 	FoodRenderer* foodRenderer;	
+	PheremoneRenderer* pheremoneRenderer;
 
 	std::unique_ptr<PheremoneManager> pheremoneManager;
 

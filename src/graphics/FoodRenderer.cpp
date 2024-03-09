@@ -12,21 +12,22 @@ FoodRenderer::FoodRenderer(WindowManager* windowManager, sf::Color foodColour,sf
 	rect.setSize({ 800,800 });
 	rect.setFillColor(foodColour);
 
-	sf::Uint8* pixels = new sf::Uint8[worldSize.x * worldSize.y * 4];
-	for (int i = 0; i < worldSize.x * worldSize.y;++i)
-	{
-		pixels[i*4+0] = 0;
-		pixels[i*4+1] = 0;
-		pixels[i*4+2] = 0;
-		pixels[i*4+3] = 0;
-	}
+	//sf::Uint8* pixels = new sf::Uint8[worldSize.x * worldSize.y * 4];
+	//for (int i = 0; i < worldSize.x * worldSize.y;++i)
+	//{
+	//	pixels[i*4+0] = 0;
+	//	pixels[i*4+1] = 0;
+	//	pixels[i*4+2] = 0;
+	//	pixels[i*4+3] = 0;
+	//}
 
 	sf::Image image;
-	image.create(800, 800, pixels);
+	image.create(800, 800, sf::Color(0,0,0,0));
 
 	foodTexture.loadFromImage(image);
 
 	rect.setTexture(&foodTexture);
+	//delete[] pixels;
 }
 
 FoodRenderer::~FoodRenderer()

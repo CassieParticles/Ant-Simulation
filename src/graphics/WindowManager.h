@@ -5,6 +5,7 @@
 
 class AntRenderer;
 class FoodRenderer;
+class PheremoneRenderer;
 
 class WindowManager
 {
@@ -14,6 +15,7 @@ public:
 
 	void setAntRenderer(AntRenderer* antRenderer) { this->antRenderer = antRenderer; }
 	void setFoodRenderer(FoodRenderer* foodRenderer) { this->foodRenderer = foodRenderer; }
+	void setPheremoneRenderer(PheremoneRenderer* pheremoneRenderer) { this->pheremoneRenderer = pheremoneRenderer; }
 
 	void windowLoop();
 
@@ -21,6 +23,8 @@ public:
 	sf::RenderWindow* getRenderWindow() { return &window; }
 protected:
 	sf::RenderWindow window;
+
 	AntRenderer* antRenderer;
 	FoodRenderer* foodRenderer;
+	PheremoneRenderer* pheremoneRenderer;
 };

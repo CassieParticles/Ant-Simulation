@@ -5,10 +5,11 @@
 
 #include "../graphics/AntRenderer.h"
 #include "../graphics/FoodRenderer.h"
+#include "../graphics/PheremoneRenderer.h"
 #include "../TaskParallelism/ThreadRandom.h"
 #include "PheremoneManager.h"
 
-AntManager::AntManager(int initialAntCount, sf::Vector2f initialPosition,sf::Vector2i worldSize, PheremoneManager* pheremoneManager) :ants{},worldSize{worldSize},pheremoneManager{pheremoneManager}
+AntManager::AntManager(int initialAntCount, sf::Vector2f initialPosition,sf::Vector2i worldSize, PheremoneManager* pheremoneManager) :ants{},worldSize{worldSize},pheremoneManager{pheremoneManager},colonyPos{initialPosition}
 {
 	foodArray.resize(worldSize.x * worldSize.y,false);
 	ants.clear();
@@ -19,7 +20,7 @@ AntManager::AntManager(int initialAntCount, sf::Vector2f initialPosition,sf::Vec
 		angle += 2 * 3.14159f / initialAntCount;
 	}
 
-	
+	colonyRadius = 10;
 }
 
 AntManager::~AntManager()
@@ -41,7 +42,7 @@ void AntManager::moveAnt(int index, float deltaTime, int threadId)
 	if (ant.desiredLocation.x == -1)	
 	{
 		constexpr float turnSpeed = 15.f;	//In degrees cause that's what sfml uses
-		constexpr float offsetScalar = 1.f;	//Scalar for random offset, lets you fine tune offset effect
+		constexpr float offsetScalar = 1.5f;	//Scalar for random offset, lets you fine tune offset effect
 
 		//Get random numbers for turn direction, and for pheremone bias
 		float randomNumber = ThreadRandom::getThreadRandom()->getRandomNumber(threadId);
@@ -118,10 +119,26 @@ void AntManager::moveAnt(int index, float deltaTime, int threadId)
 				}
 			}
 		}
+
+		//Range ant can find home
+		constexpr int homeDetectRange = 15;
+		//If ant has food, and is close to colony, head there
+		if (ant.hasFood)
+		{
+			float distSqr = (ant.position.x-colonyPos.x) * (ant.position.x-colonyPos.x) + (ant.position.y-colonyPos.y) * (ant.position.y-colonyPos.y);
+			if (distSqr < (colonyRadius + homeDetectRange) * (colonyRadius + homeDetectRange))
+			{
+				sf::Vector2f direction = colonyPos - ant.position;
+				float directionMag = sqrt(direction.x * direction.x + direction.y * direction.y);
+				direction /= directionMag;
+				ant.moveDirection = direction;
+			}
+		}
 	}
 
 	//Move ant
 	ant.position += moveSpeed * deltaTime * ant.moveDirection;
+
 
 	if (ant.position.x<0 || ant.position.x>worldSize.x)	//Ant bounces off wall
 	{
@@ -134,8 +151,8 @@ void AntManager::moveAnt(int index, float deltaTime, int threadId)
 		ant.position.y += moveSpeed * deltaTime * ant.moveDirection.y;
 	}
 
-
-	if (getFood(ant.position.x, ant.position.y)&&!ant.hasFood)	//If ant is over food, take it
+	//If ant is over food, take it
+	if (getFood(ant.position.x, ant.position.y)&&!ant.hasFood)	
 	{
 		takeFood(ant.position.x, ant.position.y);
 		ant.desiredLocation = sf::Vector2f(-1, -1);
@@ -144,15 +161,31 @@ void AntManager::moveAnt(int index, float deltaTime, int threadId)
 		ant.moveDirection *= -1.f;	//Make ant turn around
 	}
 
+	//If ant is in colony with food, drop it off
+	if (ant.hasFood)
+	{
+		float distSqr = (ant.position.x - colonyPos.x) * (ant.position.x - colonyPos.x) + (ant.position.y - colonyPos.y) * (ant.position.y - colonyPos.y);
+		if (distSqr < colonyRadius * colonyRadius)
+		{
+			ant.desiredLocation = sf::Vector2f(-1, -1);
+			ant.hasFood = false;
+			ant.moveDirection *= -1.f;	//Make ant turn around
+			std::cout << "Ant dropped off food!\n";
+			antRenderer->updateAntFood(index, ant.hasFood);
+		}
+	}
+
 	//Ant leaves a trail of pheremone
 	constexpr float pheremoneStrength{ 0.3f };
 	if (ant.hasFood)
 	{
 		pheremoneManager->addFoodPheremone(ant.position.x, ant.position.y, pheremoneStrength);
+		//pheremoneRenderer->addFoodPheremone(ant.position.x, ant.position.y, pheremoneStrength);	//Pheremone renderer too slow to be usable
 	}
 	else
 	{
 		pheremoneManager->addHomePheremone(ant.position.y, ant.position.y, pheremoneStrength);
+		//pheremoneRenderer->addHomePheremone(ant.position.x, ant.position.y, pheremoneStrength);	//Pheremone renderer too slow to be usable
 	}
 
 	antRenderer->updateAntPosition(index, ant.position);
