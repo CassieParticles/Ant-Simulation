@@ -28,5 +28,5 @@ void AntRenderer::updateAntPosition(int antIndex, sf::Vector2f antPos)
 
 void AntRenderer::updateAntFood(int antIndex, bool hasFood)
 {
-	ants[antIndex].color = hasFood ? sf::Color(0, 255, 0, 255) : sf::Color(0, 0, 0, 255);
+	ants[antIndex].color = hasFood ? sf::Color(0, 125, 0, 255) : sf::Color(0, 0, 0, 255);
 }
