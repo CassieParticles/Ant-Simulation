@@ -56,6 +56,9 @@ int main()
 
 	auto time = std::chrono::high_resolution_clock::now();
 
+	long long sumTime{ 0 };
+	int count{ 0 };
+
 	while (windowManager.getWindowOpen())
 	{
 		windowManager.windowLoop();
@@ -78,7 +81,9 @@ int main()
 			auto newTime = std::chrono::high_resolution_clock::now();	//Print time for that frame
 			long timeDelta = std::chrono::duration_cast<std::chrono::milliseconds>(newTime - time).count();
 			time = newTime;
-			std::cout << timeDelta << '\n';
+			sumTime += timeDelta;
+			std::cout << "Time for tick: " << timeDelta << " average time per tick: "<< sumTime / ++count <<'\n';
+
 		}
 	}
 

@@ -25,7 +25,7 @@ void TaskFarmAnts::workerThreadFunction(int threadIndex)
 		if (antTasks.size() == 0)	//No tasks, take a 100ms break to prevent using a lot of CPU bandwidth looping
 		{
 			taskMutex.unlock();
-			std::this_thread::sleep_for(std::chrono::milliseconds(100));
+			std::this_thread::sleep_for(std::chrono::milliseconds(10));
 			//std::cout << "Done tasks\n";
 			continue;
 		}
@@ -46,7 +46,6 @@ void TaskFarmAnts::workerThreadFunction(int threadIndex)
 void TaskFarmAnts::start()
 {
 	ready = true;
-	//std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 	readyToStart.notify_all();
 }
 
