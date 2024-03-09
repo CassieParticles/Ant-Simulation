@@ -19,18 +19,18 @@ constexpr int antCount = 1600;
 int main()
 {
 	AntManager antManager(antCount, sf::Vector2f(400, 400),sf::Vector2i(800,800));
-	TaskFarm farm(16,&antManager,antCount);
+	TaskFarm farm(12,&antManager,antCount);
 	WindowManager windowManager;
 	AntRenderer antRenderer(antCount, &windowManager);
 	FoodRenderer foodRenderer(&windowManager, sf::Color(255, 0, 0, 255),sf::Vector2i(800,800));
-	ThreadRandom::getThreadRandom(16);	//Initialize the thread random class so it can be accessed elsewhere
+	ThreadRandom::getThreadRandom(12);	//Initialize the thread random class so it can be accessed elsewhere
 
 	antManager.addAntRenderer(&antRenderer);
 	antManager.addFoodRenderer(&foodRenderer);
 
 	farm.start();	//Start running threads
 
-	antManager.addFoodChunk(256, 256, 64, 64);
+	antManager.addFoodChunk(64, 64, 64, 64);
 
 	auto time = std::chrono::high_resolution_clock::now();
 

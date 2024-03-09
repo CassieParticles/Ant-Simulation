@@ -41,7 +41,7 @@ void AntManager::moveAnt(int index, float deltaTime, int threadId)
 	if (ant.desiredLocation.x == -1)	
 	{
 		constexpr float turnSpeed = 15.f;	//In degrees cause that's what sfml uses
-		constexpr float offsetScalar = 0.1f;	//Scalar for random offset, lets you fine tune offset effect
+		constexpr float offsetScalar = 1.f;	//Scalar for random offset, lets you fine tune offset effect
 
 		//Get random numbers for turn direction, and for pheremone bias
 		float randomNumber = ThreadRandom::getThreadRandom()->getRandomNumber(threadId);
@@ -49,7 +49,7 @@ void AntManager::moveAnt(int index, float deltaTime, int threadId)
 		
 		
 
-		constexpr int pheremoneDetectRange = 5;	//Range the ant can smell pheremone
+		constexpr int pheremoneDetectRange = 10;	//Range the ant can smell pheremone
 
 		sf::Vector2f antRight = sf::Vector2f{ ant.moveDirection.y,-ant.moveDirection.x };	//Get the right direction for ant
 
@@ -141,9 +141,22 @@ void AntManager::moveAnt(int index, float deltaTime, int threadId)
 		ant.desiredLocation = sf::Vector2f(-1, -1);
 		ant.hasFood = true;
 		antRenderer->updateAntFood(index, ant.hasFood);
+		ant.moveDirection *= -1.f;	//Make ant turn around
+	}
+
+	//Ant leaves a trail of pheremone
+	constexpr float pheremoneStrength{ 0.3f };
+	if (ant.hasFood)
+	{
+		pheremoneManager->addFoodPheremone(ant.position.x, ant.position.y, pheremoneStrength);
+	}
+	else
+	{
+		pheremoneManager->addHomePheremone(ant.position.y, ant.position.y, pheremoneStrength);
 	}
 
 	antRenderer->updateAntPosition(index, ant.position);
+	
 }
 
 void AntManager::addFoodChunk(int x, int y, int width, int height)

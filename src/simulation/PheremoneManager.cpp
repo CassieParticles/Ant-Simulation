@@ -48,8 +48,7 @@ float PheremoneManager::getHomePheremone(int index)
 void PheremoneManager::evaporatePheremone(int index, float evapStrength)
 {
 	if (index < 0 || index >= size) { return; }	//Both vectors are same size, so this is fine
-	std::lock_guard<std::mutex> foodLock(foodMutex);
-	std::lock_guard<std::mutex> homeLock(homeMutex);
+	//Pheremones shouldn't evapourate when ants are running, so guard isn't needed
 	toHomePheremone[index] = std::max(toHomePheremone[index] - evapStrength, 0.f);
 	toFoodPheremone[index] = std::max(toFoodPheremone[index] - evapStrength, 0.f);
 }

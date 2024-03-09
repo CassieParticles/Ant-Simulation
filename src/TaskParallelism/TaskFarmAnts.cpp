@@ -11,7 +11,7 @@ void TaskFarm::workerThreadFunction(int threadIndex)
 	std::cout << "Thread " << threadIndex << " is ready to go\n";
 	readyToStart.wait(rLock, [this] {return ready; });	//Wait until ready
 	std::cout << "Thread " << threadIndex << " is going!\n";
-	rLock.unlock();
+	rLock.unlock();	//Allows all threads to activate
 
 	while (!end)
 	{
