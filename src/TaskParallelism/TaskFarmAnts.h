@@ -21,7 +21,7 @@ public:
 
 	void cleanup() { end = true; }
 
-	bool isTaskListEmpty() { return antTasks.size() == 0; }
+	bool isTaskListEmpty();
 	void addAnts(int antCount);
 
 	void workerThreadFunction(int threadIndex);
@@ -31,7 +31,11 @@ public:
 	void pause() { ready = false; }
 	void unpause() { ready = true; }
 protected:
-	std::queue<int> antTasks;
+	//std::queue<int> antTasks;
+
+	std::vector<std::queue<int>> antTasks;
+	int threadCount;
+
 	std::mutex taskMutex;
 
 	std::mutex readyMutex;

@@ -20,20 +20,17 @@ void TaskFarmAnts::workerThreadFunction(int threadIndex)
 			std::this_thread::sleep_for(std::chrono::milliseconds(10));	//Pause thread for 10 millisonds (will be doing this when pheremones are evapourating)
 			continue;
 		}
-		taskMutex.lock();	//Lock the task mutex then get a task
 
-		if (antTasks.size() == 0)	//No tasks, take a 100ms break to prevent using a lot of CPU bandwidth looping
+		if (antTasks[threadIndex].size() == 0)	//No tasks, take a 100ms break to prevent using a lot of CPU bandwidth looping
 		{
-			taskMutex.unlock();
+			//taskMutex.unlock();
 			std::this_thread::sleep_for(std::chrono::milliseconds(10));
 			//std::cout << "Done tasks\n";
 			continue;
 		}
 
-		int task = antTasks.front();	//Get the task
-		antTasks.pop();
-
-		taskMutex.unlock();	//unlock the mutex
+		int task = antTasks[threadIndex].front();	//Get the task
+		antTasks[threadIndex].pop();
 
 		
 
@@ -50,22 +47,25 @@ void TaskFarmAnts::start()
 }
 
 
-TaskFarmAnts::TaskFarmAnts(int threadCount,AntManager* antManager, int initialAntCount):antManager{antManager}
+TaskFarmAnts::TaskFarmAnts(int threadCount,AntManager* antManager, int initialAntCount):antManager{antManager},threadCount{threadCount}
 {
-	taskMutex.lock();
+	//taskMutex.lock();
 	for (int i = 0; i < threadCount; ++i)	//Create worker threads, don't need to be stored since they won't be joined
 	{
 		std::thread t = std::thread(&TaskFarmAnts::workerThreadFunction, this,i);
+		antTasks.push_back(std::queue<int>());
 		t.detach();
 	}
+
 
 	//Add tasks
 	for (int i = 0; i < initialAntCount; ++i)
 	{
-		antTasks.push(i);
+		//antTasks.push(i);
+		antTasks[i % threadCount].push(i);
 	}
 
-	taskMutex.unlock();	//Let worker threads execute tasks
+	//taskMutex.unlock();	//Let worker threads execute tasks
 
 }
 
@@ -74,14 +74,27 @@ TaskFarmAnts::~TaskFarmAnts()
 	cleanup();
 }
 
+bool TaskFarmAnts::isTaskListEmpty()
+{
+	for (int i = 0; i < threadCount; ++i)
+	{
+		if (antTasks[i].size() != 0)
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
 void TaskFarmAnts::addAnts(int antCount)
 {
-	taskMutex.lock();
+	//taskMutex.lock();
 	for (int i = 0; i < antCount; ++i)
 	{
-		antTasks.push(i);
+		//antTasks.push(i);
+		antTasks[i % threadCount].push(i);
 	}
-	taskMutex.unlock();
+	//taskMutex.unlock();
 }
 
 
