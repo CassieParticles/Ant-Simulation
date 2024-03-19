@@ -29,10 +29,12 @@ void AntRenderer::renderAnts()
 
 void AntRenderer::updateAntPosition(int antIndex, sf::Vector2f antPos)
 {
+	if (!windowManager->getWindowOpen()) { return; }
 	ants[antIndex].position = antPos;
 }
 
 void AntRenderer::updateAntFood(int antIndex, bool hasFood)
 {
+	if (!windowManager->getWindowOpen()) { return; }
 	ants[antIndex].color = hasFood ? sf::Color(0, 125, 125, 255) : sf::Color(0, 0, 0, 255);
 }

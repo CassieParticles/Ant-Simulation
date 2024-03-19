@@ -52,7 +52,7 @@ protected:
 	FoodRenderer* foodRenderer;	
 	PheremoneRenderer* pheremoneRenderer;
 
-	std::unique_ptr<PheremoneManager> pheremoneManager;
+	PheremoneManager* pheremoneManager;
 
 	std::vector<bool> foodArray;	//Array of pixels where there is food
 	std::mutex foodMutex;
