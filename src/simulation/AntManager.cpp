@@ -36,9 +36,9 @@ void AntManager::moveAnt(int index, float deltaTime, int threadId)
 {
 	constexpr float turnSpeed = 15.f;	//In degrees cause that's what sfml uses
 	constexpr float offsetScalar = 1.5f;	//Scalar for random offset, lets you fine tune offset effect
-	constexpr float pheremoneOverride = 2.f;	//How much pheremone needs to be read in either direction to override the ant
-	constexpr float pheremoneStrengthHome{ 0.1f };	// How much of a "to home" pheremone trail an ant leaves
-	constexpr float pheremoneStrengthFood{ 0.2f };	// How much of a "to food" pheremone trail an ant leaves
+	constexpr float pheremoneOverride = 1.f;	//How much pheremone needs to be read in either direction to override the ant
+	constexpr float pheremoneStrengthHome{ 0.05f };	// How much of a "to home" pheremone trail an ant leaves
+	constexpr float pheremoneStrengthFood{ 0.45f };	// How much of a "to food" pheremone trail an ant leaves
 	//Get ant from list (race condition should be prevented in the task farm, so mutex not needed here)
 	Ant& ant = ants.at(index);
 
@@ -132,7 +132,7 @@ void AntManager::moveAnt(int index, float deltaTime, int threadId)
 		}
 
 		//Range ant can find home
-		constexpr int homeDetectRange = 15;
+		constexpr int homeDetectRange = 35;
 		//If ant has food, and is close to colony, head there
 		if (ant.hasFood)
 		{
