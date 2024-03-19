@@ -74,7 +74,7 @@ void TaskFarmPheremones::workerTask(int threadId)
 		taskQueue.pop();
 
 		//Run task
-		pheremoneManager->evaporatePheremone(task,0.01f);
+		pheremoneManager->evaporatePheremone(task,0.05f);
 
 	}
 } 

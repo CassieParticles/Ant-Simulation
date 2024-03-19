@@ -63,8 +63,6 @@ int main()
 	{
 		windowManager.windowLoop();
 
-
-
 		if (antFarm.isTaskListEmpty())	//If all ants are done, swap to pheremone
 		{
 			antFarm.pause();

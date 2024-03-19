@@ -34,15 +34,18 @@ void AntManager::addAnt(sf::Vector2f position, sf::Vector2f moveDirection)
 
 void AntManager::moveAnt(int index, float deltaTime, int threadId)
 {
-
+	constexpr float turnSpeed = 15.f;	//In degrees cause that's what sfml uses
+	constexpr float offsetScalar = 1.5f;	//Scalar for random offset, lets you fine tune offset effect
+	constexpr float pheremoneOverride = 2.f;	//How much pheremone needs to be read in either direction to override the ant
+	constexpr float pheremoneStrengthHome{ 0.1f };	// How much of a "to home" pheremone trail an ant leaves
+	constexpr float pheremoneStrengthFood{ 0.2f };	// How much of a "to food" pheremone trail an ant leaves
 	//Get ant from list (race condition should be prevented in the task farm, so mutex not needed here)
 	Ant& ant = ants.at(index);
 
 	//if no desired location, just meandering, now with pheremones!
 	if (ant.desiredLocation.x == -1)	
 	{
-		constexpr float turnSpeed = 15.f;	//In degrees cause that's what sfml uses
-		constexpr float offsetScalar = 1.5f;	//Scalar for random offset, lets you fine tune offset effect
+
 
 		//Get random numbers for turn direction, and for pheremone bias
 		float randomNumber = ThreadRandom::getThreadRandom()->getRandomNumber(threadId);
@@ -54,7 +57,7 @@ void AntManager::moveAnt(int index, float deltaTime, int threadId)
 
 		sf::Vector2f antRight = sf::Vector2f{ ant.moveDirection.y,-ant.moveDirection.x };	//Get the right direction for ant
 
-		//Get overall pheremones around the ant
+		//Get overall pheremones around the ant (-ve is left, +ve is right)
 		float pheremoneDirection{ 0 };	//Cumulative pheremone effect on ant
 		for (int y = -pheremoneDetectRange; y < pheremoneDetectRange; ++y)
 		{
@@ -84,6 +87,14 @@ void AntManager::moveAnt(int index, float deltaTime, int threadId)
 				pheremoneDirection += pheremoneEffect;
 			}
 		}
+		
+
+		if (abs(pheremoneDirection) > pheremoneOverride)	//Pheremone is strong enough to override random wander
+		{
+			randomNumber = signbit(pheremoneDirection);	//Set ant to turn at max speed in that direction, pheremone affects in this way, not randomly
+			pheremoneDirection = 0;
+		}
+
 		//Get random 
 		float rotationOffset = (randomNumber - 0.5f) * turnSpeed;
 
@@ -176,15 +187,15 @@ void AntManager::moveAnt(int index, float deltaTime, int threadId)
 	}
 
 	//Ant leaves a trail of pheremone
-	constexpr float pheremoneStrength{ 0.3f };
+
 	if (ant.hasFood)
 	{
-		pheremoneManager->addFoodPheremone(ant.position.x, ant.position.y, pheremoneStrength);
+		pheremoneManager->addFoodPheremone(ant.position.x, ant.position.y, pheremoneStrengthFood);
 		//pheremoneRenderer->addFoodPheremone(ant.position.x, ant.position.y, pheremoneStrength);	//Pheremone renderer too slow to be usable
 	}
 	else
 	{
-		pheremoneManager->addHomePheremone(ant.position.y, ant.position.y, pheremoneStrength);
+		pheremoneManager->addHomePheremone(ant.position.y, ant.position.y, pheremoneStrengthHome);
 		//pheremoneRenderer->addHomePheremone(ant.position.x, ant.position.y, pheremoneStrength);	//Pheremone renderer too slow to be usable
 	}
 
