@@ -19,7 +19,7 @@
 
 #include <chrono>
 
-constexpr int antCount = 160;
+constexpr int antCount = 1600;
 
 sf::Vector2i worldSize= sf::Vector2i(800, 800);
 sf::Vector2f antStartPos = sf::Vector2f(400, 400);
