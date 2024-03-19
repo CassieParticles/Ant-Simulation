@@ -80,7 +80,7 @@ int main()
 			long timeDelta = std::chrono::duration_cast<std::chrono::milliseconds>(newTime - time).count();
 			time = newTime;
 			sumTime += timeDelta;
-			std::cout << "Time for tick: " << timeDelta << " average time per tick: "<< sumTime / ++count <<'\n';
+			std::cout << "Time for tick: " << timeDelta << "\t average time per tick: "<< sumTime / ++count <<'\n';
 
 		}
 	}
