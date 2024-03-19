@@ -81,7 +81,6 @@ int main()
 			time = newTime;
 			sumTime += timeDelta;
 			std::cout << "Time for tick: " << timeDelta << "\t average time per tick: "<< sumTime / ++count <<'\n';
-
 		}
 	}
 
