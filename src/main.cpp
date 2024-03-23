@@ -19,13 +19,13 @@
 
 #include <chrono>
 
-constexpr int antCount = 1600;
+constexpr int antCount = 100000;
 
 sf::Vector2i worldSize= sf::Vector2i(800, 800);
 sf::Vector2f antStartPos = sf::Vector2f(400, 400);
 
-int antThreads = 12;
-int pheremoneThreads = 4;
+int antThreads = 11;
+int pheremoneThreads = 1;
 
 int main()
 {

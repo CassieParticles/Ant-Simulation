@@ -132,7 +132,7 @@ void AntManager::moveAnt(int index, float deltaTime, int threadId)
 		}
 
 		//Range ant can find home
-		constexpr int homeDetectRange = 35;
+		constexpr int homeDetectRange = 800;
 		//If ant has food, and is close to colony, head there
 		if (ant.hasFood)
 		{

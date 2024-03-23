@@ -17,7 +17,7 @@ protected:
 	static bool initialized;	//Once we know the singleton is initialized, we don't need to use a mutex to protect it anymore
 
 
-	constexpr static int randomListSize=1000;	//1000 values per thread * 16 threads * 4 bytes per thread mean this will be 64kB
+	constexpr static int randomListSize=1347;	//1347 values per thread * 16 threads * 4 bytes per thread
 	int threadCount;
 
 	float** randomNumbers;
